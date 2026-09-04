@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<!--
+文件名: install-guide.html
+作  者: AI自动生成
+创建时间: 2026-09-04
+功能描述: 麦播链 MicSpeakLink v0.1.0 安装配置说明书（对外交付版）
+作用域: 全局通用（deploy/ 目录交付物）
+依赖关系: README.md、docs/architecture.md、docs/modules/*、assets/*.png|jpg
+模块附加注释: 嵌入 assets/ 中的 PC 端与手机端界面截图；含两模式详解、配置流程、常见问题 FAQ
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>麦播链 MicSpeakLink · 安装配置说明书 v0.1.0</title>
+<link rel="icon" type="image/png" href="./assets/MicSpeakLink_logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg-0: #070a0d;
+    --bg-1: #0d1117;
+    --bg-2: #161b22;
+    --bg-3: #1f2530;
+    --bg-4: #2d3540;
+    --bg-5: #3d4654;
+    --text-primary: #e6edf3;
+    --text-secondary: #9da7b3;
+    --text-tertiary: #6e7681;
+    --accent: #ffb342;
+    --accent-soft: rgba(255, 179, 66, 0.12);
+    --accent-glow: rgba(255, 179, 66, 0.3);
+    --accent-press: #e89b22;
+    --success: #4a8a7b;
+    --danger: #c94545;
+    --warning: #d4a017;
+    --info: #6b8fa8;
+    --border: #2d3540;
+    --border-strong: #3d4654;
+    --font-sans: 'IBM Plex Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+    --font-display: 'Fraunces', 'IBM Plex Serif', serif;
+    --shadow-2: 0 10px 40px rgba(0, 0, 0, 0.5);
+    --e-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+    --e-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg-1);
+    color: var(--text-primary);
+    line-height: 1.6;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === 顶部 Hero === */
+  .hero {
+    background: linear-gradient(135deg, var(--bg-0) 0%, var(--bg-1) 60%, var(--bg-2) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 64px 24px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(255,179,66,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-inner { max-width: 1080px; margin: 0 auto; position: relative; }
+  .hero-logo {
+    width: 88px; height: 88px;
+    border-radius: 18px;
+    background: var(--bg-3);
+    border: 1px solid var(--border-strong);
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 24px;
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+  .hero-logo img { width: 64px; height: 64px; }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+  .hero h2 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 16px;
+    letter-spacing: 0.04em;
+  }
+  .hero-tagline {
+    font-size: 16px;
+    color: var(--text-secondary);
+    max-width: 720px;
+    margin: 0 auto 32px;
+  }
+  .hero-meta {
+    display: inline-flex; gap: 8px; flex-wrap: wrap;
+    justify-content: center;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
+  .chip.accent .dot { background: var(--accent); }
+
+  /* === 顶部导航 === */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13, 17, 23, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-inner {
+    max-width: 1280px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 24px;
+  }
+  .topbar-brand {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-display); font-size: 18px; font-weight: 600;
+  }
+  .topbar-brand img { width: 28px; height: 28px; }
+  .topbar-nav {
+    display: flex; gap: 4px;
+    flex-wrap: wrap;
+  }
+  .topbar-nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    transition: all 140ms var(--e-out);
+  }
+  .topbar-nav a:hover {
+    color: var(--text-primary);
+    background: var(--bg-3);
+  }
+
+  /* === 内容容器 === */
+  .container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 56px 24px;
+  }
+
+  /* === 章节 === */
+  section { margin-bottom: 80px; scroll-margin-top: 80px; }
+  section:last-child { margin-bottom: 0; }
+
+  .section-head {
+    display: flex; align-items: baseline; gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    flex: 1;
+  }
+  .section-sub {
+    color: var(--text-secondary);
+    font-size: 15px;
+    max-width: 720px;
+    margin: -16px 0 32px;
+  }
+
+  /* === 段落 & 列表 === */
+  p { color: var(--text-secondary); margin-bottom: 16px; font-size: 15px; }
+  p strong { color: var(--text-primary); font-weight: 600; }
+  ul, ol { color: var(--text-secondary); margin: 0 0 16px 24px; font-size: 15px; }
+  ul li, ol li { margin-bottom: 8px; line-height: 1.7; }
+  ul li::marker { color: var(--accent); }
+  code {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent);
+  }
+
+  /* === 卡片 === */
+  .card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+  .card-subtitle {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 16px;
+  }
+
+  /* === 两模式对比卡 === */
+  .mode-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 768px) {
+    .mode-grid { grid-template-columns: 1fr; }
+  }
+  .mode-card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 28px;
+    position: relative;
+    transition: transform 220ms var(--e-out), border-color 220ms var(--e-out);
+  }
+  .mode-card.listen { border-left-color: var(--info); }
+  .mode-card:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+  .mode-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+    display: inline-block;
+  }
+  .mode-name {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .mode-en {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.04em;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  .mode-flow {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+    background: var(--bg-3);
+    padding: 12px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    line-height: 1.7;
+    margin: 16px 0;
+    word-break: break-all;
+  }
+  .mode-card.listen .mode-flow { color: var(--info); }
+  .mode-card ul { margin: 12px 0 0 20px; }
+  .mode-card ul li { font-size: 14px; }
+
+  /* === 步骤 === */
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    padding: 16px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 36px; height: 36px;
+    background: var(--bg-3);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .step-content { flex: 1; }
+  .step-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+  .step-desc {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  /* === 提示框 === */
+  .callout {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  .callout-icon { font-size: 18px; flex-shrink: 0; line-height: 1.5; }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout-tip { background: var(--accent-soft); border-color: var(--accent); color: var(--text-primary); }
+  .callout-warn { background: rgba(212, 160, 23, 0.10); border-color: var(--warning); color: var(--text-primary); }
+  .callout-danger { background: rgba(201, 69, 69, 0.10); border-color: var(--danger); color: var(--text-primary); }
+  .callout-info { background: rgba(107, 143, 168, 0.10); border-color: var(--info); color: var(--text-primary); }
+
+  /* === 图片 === */
+  .screenshot {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 20px 0;
+  }
+  .screenshot-frame {
+    background: var(--bg-0);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex; justify-content: center;
+    min-height: 240px;
+  }
+  .screenshot-frame img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+  .screenshot-caption {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: var(--bg-3);
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .screenshot-caption strong { color: var(--accent); }
+
+  /* === 表格 === */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  thead th {
+    background: var(--bg-3);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-primary);
+  }
+  tbody td { color: var(--text-secondary); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--bg-3); }
+
+  /* === FAQ 折叠 === */
+  .faq {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 220ms var(--e-out);
+  }
+  .faq[open] { border-color: var(--border-strong); }
+  .faq summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 18px 22px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    user-select: none;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after {
+    content: '+';
+    font-family: var(--font-mono);
+    font-size: 20px;
+    color: var(--accent);
+    transition: transform 220ms var(--e-spring);
+  }
+  .faq[open] summary::after { content: '−'; transform: rotate(180deg); }
+  .faq-content {
+    padding: 0 22px 20px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.8;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+  .faq-content ul { margin-top: 8px; }
+
+  /* === 标签 === */
+  .tag-row {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin: 8px 0 16px;
+  }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    letter-spacing: 0.04em;
+  }
+  .tag.write { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+  .tag.listen { color: var(--info); border-color: var(--info); background: rgba(107,143,168,0.12); }
+
+  /* === 快捷键 === */
+  kbd {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 8px;
+    background: var(--bg-3);
+    border: 1px solid var(--border-strong);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+  .kbd-row { display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+
+  /* === 底部 === */
+  footer {
+    background: var(--bg-0);
+    border-top: 1px solid var(--border);
+    padding: 40px 24px;
+    text-align: center;
+    margin-top: 80px;
+  }
+  footer p { color: var(--text-tertiary); font-size: 13px; margin-bottom: 6px; }
+  footer .mono { font-family: var(--font-mono); }
+
+  /* === 锚点跳转标识 === */
+  .anchor { color: var(--text-tertiary); margin-left: 6px; opacity: 0.4; font-size: 14px; text-decoration: none; }
+  h3:hover .anchor { opacity: 1; }
+
+  /* === H3 === */
+  h3 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    margin: 32px 0 16px;
+    color: var(--text-primary);
+    letter-spacing: -0.005em;
+  }
+  h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 24px 0 12px;
+  }
+
+  /* === 流程图 === */
+  .flow {
+    display: flex; flex-wrap: wrap; gap: 0;
+    align-items: center; justify-content: center;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 16px 0;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .flow-node {
+    background: var(--bg-3);
+    border: 1px solid var(--border-strong);
+    padding: 10px 14px;
+    border-radius: 6px;
+    color: var(--text-primary);
+  }
+  .flow-node.accent { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+  .flow-arrow {
+    padding: 0 10px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* === 配置任务清单 === */
+  .checklist { list-style: none; padding: 0; margin: 16px 0; }
+  .checklist li {
+    padding: 10px 12px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 12px;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+  .checklist li::before {
+    content: '☐';
+    color: var(--accent);
+    font-size: 16px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== 顶部导航 ========== -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-brand">
+      <img src="./assets/MicSpeakLink_logo.png" alt="MicSpeakLink" />
+      <span>麦播链 MicSpeakLink</span>
+    </div>
+    <nav class="topbar-nav">
+      <a href="#intro">概述</a>
+      <a href="#modes">双模式</a>
+      <a href="#install">安装</a>
+      <a href="#config-write">写模式</a>
+      <a href="#config-listen">听模式</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </div>
+</div>
+
+<!-- ========== Hero ========== -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-logo">
+      <img src="./assets/MicSpeakLink_logo.png" alt="Logo" />
+    </div>
+    <h1>麦播链 MicSpeakLink</h1>
+    <h2>安装配置说明书</h2>
+    <p class="hero-tagline">
+      把你的 Android 手机变成 Windows 台式机的无线麦克风 + 无线扬声器，<br />
+      同时附带本地 ASR 实时语音转写能力，全程局域网闭环，零云端上传。
+    </p>
+    <div class="hero-meta">
+      <span class="chip"><span class="dot"></span>v0.1.0 · 2026-09-04</span>
+      <span class="chip accent"><span class="dot"></span>Windows 10/11 · Android</span>
+      <span class="chip">GPL-3.0</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ========== 一、概述 ========== -->
+<section id="intro">
+  <div class="section-head">
+    <span class="section-num">01 / 概览</span>
+    <h2 class="section-title">产品定位与适用场景</h2>
+  </div>
+  <p class="section-sub">
+    麦播链（MicSpeakLink）是一套<strong>电脑端 + 手机端协同</strong>的局域网音频方案，
+    通过 WebRTC 在内网建立低延迟双向链路，再叠加本地 ASR 引擎实现语音转文字。
+    整个链路不依赖公网服务器，语音数据不离开你的局域网。
+  </p>
+
+  <div class="screenshot">
+    <div class="screenshot-frame">
+      <img src="./assets/软件首页.png" alt="PC 端软件首页" />
+    </div>
+    <div class="screenshot-caption">
+      <strong>图 1 · PC 端软件首页</strong> — 深色 Audio Console 风格的主控面板，
+      集中展示设备连接、模式切换、ASR 状态、语音音量与识别文本。
+    </div>
+  </div>
+
+  <h3>适合什么用户</h3>
+  <ul>
+    <li><strong>无麦无喇叭的台式主机用户</strong>，不想额外购置 USB 声卡或蓝牙耳机。</li>
+    <li><strong>需要本地实时语音转写</strong>，做会议记录、口述文档、聊天输入。</li>
+    <li><strong>对延迟敏感</strong>，嫌弃蓝牙耳机打游戏开会影音不同步。</li>
+    <li><strong>对隐私敏感</strong>，不希望语音上传到任何第三方云服务。</li>
+    <li><strong>多设备切换用户</strong>，希望手机随手当麦克风 / 扬声器用。</li>
+  </ul>
+
+  <h3>核心能力速览</h3>
+  <table>
+    <thead>
+      <tr><th>能力</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>无线麦克风</td><td>手机麦克风 → WebRTC → PC 端使用</td></tr>
+      <tr><td>无线扬声器</td><td>PC 系统音频 → VoiceMeeter → WebRTC → 手机扬声器</td></tr>
+      <tr><td>语音转文字</td><td>本地 Sherpa-ONNX 模型，结果直接写入光标处</td></tr>
+      <tr><td>局域网零依赖</td><td>同一 Wi-Fi 下自动发现、配对、传输，无需公网</td></tr>
+      <tr><td>托盘常驻</td><td>后台静默运行，全局快捷键切换模式</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ========== 二、双模式 ========== -->
+<section id="modes">
+  <div class="section-head">
+    <span class="section-num">02 / 双模式</span>
+    <h2 class="section-title">写模式 vs 听模式</h2>
+  </div>
+  <p class="section-sub">
+    麦播链提供两个互斥的音频工作模式，由后端统一状态机裁决。
+    <strong>同一时刻只能启用其中一个</strong>，避免音轨冲突。
+  </p>
+
+  <div class="mode-grid">
+
+    <!-- 写模式 -->
+    <div class="mode-card write">
+      <span class="mode-icon">✎</span>
+      <div class="tag-row">
+        <span class="tag write">WRITE MODE</span>
+        <span class="tag">ASR</span>
+        <span class="tag">文字注入</span>
+      </div>
+      <div class="mode-name">写模式</div>
+      <div class="mode-en">Speak → Type</div>
+      <p style="color: var(--text-secondary); font-size: 14px;">
+        把手机麦克风采集的语音，实时转发到 PC 端做<strong>离线语音识别</strong>，
+        识别出的文字直接发送到当前<strong>桌面输入框的光标位置</strong>。
+      </p>
+      <h4 style="color: var(--accent); margin-top: 16px;">音频链路</h4>
+      <div class="mode-flow">
+        手机麦克风 → WebRTC 上行 → PC 解码 → Sherpa-ONNX 模型 → 文本注入 → 桌面输入框
+      </div>
+      <h4 style="color: var(--accent);">典型场景</h4>
+      <ul>
+        <li>对着手机口述，自动输入到 Word / 记事本 / IDE / 聊天窗口</li>
+        <li>会议记录、长文写作、邮件草稿</li>
+        <li>无障碍输入、临时替代键盘</li>
+      </ul>
+      <h4 style="color: var(--accent);">前置依赖</h4>
+      <ul>
+        <li>ASR 模型文件已就绪（首次启动会自动下载/校验）</li>
+        <li>PC 默认输入设备已指向 <code>VoiceMeeter Input</code></li>
+        <li>桌面焦点处于可输入控件</li>
+      </ul>
+    </div>
+
+    <!-- 听模式 -->
+    <div class="mode-card listen">
+      <span class="mode-icon">♪</span>
+      <div class="tag-row">
+        <span class="tag listen">LISTEN MODE</span>
+        <span class="tag">音频回传</span>
+        <span class="tag">VoiceMeeter</span>
+      </div>
+      <div class="mode-name">听模式</div>
+      <div class="mode-en">System Audio → Phone</div>
+      <p style="color: var(--text-secondary); font-size: 14px;">
+        把 PC 端的<strong>系统播放音频</strong>通过 VoiceMeeter Banana 抓取，
+        经 WebRTC 下行到手机扬声器播放，让手机充当电脑的外放喇叭。
+      </p>
+      <h4 style="color: var(--info); margin-top: 16px;">音频链路</h4>
+      <div class="mode-flow">
+        PC 系统音频 → VoiceMeeter Banana → WASAPI Loopback → Opus 编码 → WebRTC 下行 → 手机扬声器
+      </div>
+      <h4 style="color: var(--info);">典型场景</h4>
+      <ul>
+        <li>没有外接音箱的台式机，需要外放声音</li>
+        <li>半夜看电影 / 听歌，不开音响也不戴耳机</li>
+        <li>把手机放到任何位置听电脑音频（沙发、厨房、阳台）</li>
+      </ul>
+      <h4 style="color: var(--info);">前置依赖</h4>
+      <ul>
+        <li>已安装并运行 <strong>VoiceMeeter Banana</strong></li>
+        <li>PC 默认输出设备已指向 <code>Voicemeeter AUX Input</code></li>
+        <li>VoiceMeeter 路由：<code>VoiceMeeter Input → B1</code> / <code>Voicemeeter AUX Input → B2</code></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">★</span>
+    <p>
+      <strong>模式互斥原则</strong>：写模式和听模式<strong>不能同时开启</strong>。
+      切换任何一个模式时，另一个会被后端自动停用。这种设计由 <code>store.toggleListenMode()</code> /
+      <code>store.toggleListening()</code> 统一裁决，避免 UI 与真实状态错位。
+    </p>
+  </div>
+
+  <h3>能力流对比图</h3>
+  <h4 style="color: var(--accent);">写模式 · Speak → Type</h4>
+  <div class="flow">
+    <span class="flow-node">手机 Mic</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-node">WebRTC</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-node accent">PC ASR</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-node accent">文本注入</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-node">桌面输入框</span>
+  </div>
+
+  <h4 style="color: var(--info);">听模式 · System Audio → Phone</h4>
+  <div class="flow">
+    <span class="flow-node">PC 系统音频</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-node">VoiceMeeter</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-node">Loopback</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-node">Opus</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-node">WebRTC</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-node">手机扬声器</span>
+  </div>
+</section>
+
+<!-- ========== 三、安装 ========== -->
+<section id="install">
+  <div class="section-head">
+    <span class="section-num">03 / 安装</span>
+    <h2 class="section-title">PC 端与手机端安装</h2>
+  </div>
+  <p class="section-sub">
+    麦播链由两个端组成：<strong>Windows 电脑端</strong>负责系统集成与 ASR，
+    <strong>Android 手机端</strong>负责拾音和外放。两端必须在<strong>同一局域网</strong>。
+  </p>
+
+  <h3>3.1 PC 端安装步骤</h3>
+
+  <div class="screenshot">
+    <div class="screenshot-frame">
+      <img src="./assets/PCAPP向导-欢迎页.png" alt="PC 端安装向导欢迎页" />
+    </div>
+    <div class="screenshot-caption">
+      <strong>图 2 · 安装向导欢迎页</strong> — NSIS 安装包启动后展示的欢迎界面，
+      默认勾选安装路径、桌面快捷方式与 ASR 模型集成。
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">下载 PC 端安装包</div>
+      <div class="step-desc">
+        从 GitHub 仓库
+        <a href="https://github.com/tengyuangangben/MicSpeakLink.git" target="_blank" style="color: var(--accent);">github.com/tengyuangangben/MicSpeakLink</a>
+        的 <strong>Releases</strong> 页面获取
+        <code>MicSpeakLink-Setup-v0.1.0.exe</code>。该安装包已内置 ASR 模型、WebView2 离线运行时与 VoiceMeeter 协同安装逻辑。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">以管理员身份运行安装器</div>
+      <div class="step-desc">
+        右键 → <strong>以管理员身份运行</strong>。安装器会写入注册表、注册 mDNS 服务、调度 VoiceMeeter 检测逻辑。
+        非管理员权限可能导致 VoiceMeeter 路由配置失败。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <div class="step-title">同意安装路径并完成安装</div>
+      <div class="step-desc">
+        默认安装到 <code>%LOCALAPPDATA%\Programs\MicSpeakLink</code>。
+        安装过程中如果检测到系统未安装 VoiceMeeter Banana，会自动弹出 VB-Audio 安装器，
+        等待 GUI 窗口关闭后安装器会复检注册表并自动路由。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <div class="step-title">首次启动并查看首页</div>
+      <div class="step-desc">
+        安装完成后会自动启动麦播链，首次启动会校验 ASR 模型完整性。
+        进入首页后即可看到设备面板、模式切换开关、识别文本区。
+      </div>
+    </div>
+  </div>
+
+  <div class="screenshot">
+    <div class="screenshot-frame">
+      <img src="./assets/软件首页.png" alt="PC 端软件首页" />
+    </div>
+    <div class="screenshot-caption">
+      <strong>图 3 · PC 端软件首页</strong> — 启动后主控面板，
+      显示设备 ID、配对码生成、模式开关、信任设备管理、运行时状态。
+    </div>
+  </div>
+
+  <h3>3.2 获取安装包（统一入口）</h3>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">i</span>
+    <p>
+      <strong>统一下载入口</strong>：请前往麦播链的 GitHub 仓库
+      <a href="https://github.com/tengyuangangben/MicSpeakLink.git" target="_blank" style="color: var(--accent);">github.com/tengyuangangben/MicSpeakLink</a>
+      的 <strong>Releases</strong> 页面，同时获取 PC 端安装包（<code>.exe</code>）与 Android 端安装包（<code>.apk</code>）。
+      Releases 页面会按版本号罗列每个版本的官方构建产物及校验信息，<strong>请勿从第三方渠道下载</strong>，以免被植入恶意代码。
+    </p>
+  </div>
+
+  <h3>3.3 手机端安装步骤</h3>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">下载 APK</div>
+      <div class="step-desc">
+        从上述 GitHub Releases 页面下载最新版本的 <code>MicSpeakLink-v0.1.0.apk</code> 到手机本地存储。
+        可用手机浏览器打开仓库地址直接下载，也可先下载到电脑再通过 USB / 微信文件传输 / 网盘等方式拷贝到手机。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">开启「未知来源安装」并安装 APK</div>
+      <div class="step-desc">
+        系统设置 → 应用 → 特殊应用权限 → 安装未知应用 → 选择你的浏览器/文件管理器 → 允许。
+        然后点击 APK 完成安装。首次启动会申请<strong>麦克风</strong>和<strong>通知</strong>权限，请全部允许。
+      </div>
+    </div>
+  </div>
+
+  <div class="screenshot">
+    <div class="screenshot-frame">
+      <img src="./assets/手机APP.jpg" alt="手机 APP 界面" />
+    </div>
+    <div class="screenshot-caption">
+      <strong>图 4 · 手机 APP 首页</strong> — Android 端深色 Audio Console 风格首页，
+      包含麦克风采集卡、连接状态指示、远端音频状态卡与历史字幕区。
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <div class="step-title">授予自启动和电池白名单（可选但推荐）</div>
+      <div class="step-desc">
+        为保证切到后台时音频流不中断，建议按系统提示把麦播链加入：
+        <strong>① 自启动白名单 ② 电池优化白名单 ③ 后台运行白名单</strong>。
+        华为/小米/OPPO/vivo/三星 ROM 路径各不相同，
+        APP 首次进入主页会弹出引导，可按提示一键跳转。
+      </div>
+    </div>
+  </div>
+
+  <h3>3.3 端到端配对（手机输入配对码连接 PC）</h3>
+
+  <p>
+    麦播链通过<strong>局域网自动发现 + 配对码认证</strong>建立手机与 PC 的 WebRTC 链路。
+    <strong>不是扫码</strong>，而是手机端手动输入 PC 端显示的 6 位数字配对码完成配对。
+  </p>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">确认 PC 端已启动麦播链</div>
+      <div class="step-desc">
+        PC 端麦播链必须处于运行状态（托盘有图标，首页可访问）。
+        此时首页会显示一个 <strong>6 位数字配对码</strong>（每 60 秒自动刷新）。
+        记住或复制该配对码，手机端马上要用。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">打开手机 APP，点击右上角的「刷新」按钮</div>
+      <div class="step-desc">
+        APP 启动后默认在扫描页。点击页面<strong>右上角的刷新按钮</strong>主动触发一次局域网扫描，
+        否则会等待下一轮自动扫描。扫描过程会遍历 1~254 子网内的 mDNS / 端口探测，
+        一般 2~5 秒内出结果。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <div class="step-title">在扫描列表中点击你的电脑 IP</div>
+      <div class="step-desc">
+        扫描结果会列出所有在局域网里、且 PC 端麦播链已启动的设备，每条带电脑名称与 IP。
+        点击你要连接的那台 PC（需要与 PC 端首页显示的电脑名一致），APP 会跳转到<strong>配对页</strong>。
+        如果列表为空，确认两端在同一 Wi-Fi 且路由器未开启 AP 隔离。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <div class="step-title">在配对页输入 PC 端显示的 6 位配对码，点击「连接」</div>
+      <div class="step-desc">
+        配对页提供 6 个独立输入框用于输入配对码，逐位填写即可。
+        填写完成后点击页面下方的 <strong>「连接」</strong> 按钮提交认证。
+        若配对码已过期（PC 端 60 秒倒计时归零），系统会提示重新生成。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-content">
+      <div class="step-title">等待连接成功，自动进入写模式</div>
+      <div class="step-desc">
+        认证通过后 APP 会自动完成 WebRTC 协商与音频通道建立，约 1~3 秒进入主页。
+        主页默认就处于<strong>写模式开启</strong>状态，手机麦克风采集的语音会被实时识别并下发到 PC 端。
+        若首页右下角未显示「已连接 [电脑名]」，请重试步骤 2~4。
+      </div>
+    </div>
+  </div>
+
+  <div class="screenshot">
+    <div class="screenshot-frame">
+      <img src="./assets/连接成功后的界面.png" alt="连接成功后的界面" />
+    </div>
+    <div class="screenshot-caption">
+      <strong>图 5 · 手机端连接成功后的界面</strong> — 显示电脑名称、连接状态、实时音量波形、识别字幕历史。
+      连接成功后默认即处于写模式，无需在手机端额外切换。
+    </div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">★</span>
+    <p>
+      <strong>信任设备机制</strong>：首次配对成功后，手机会以加密形式把 <code>device_token</code> 存到本地。
+      下次打开 APP，已信任的 PC 会自动显示「已信任」标记，连接时跳过配对码输入步骤，
+      直接进入主页并默认开启写模式。
+    </p>
+  </div>
+</section>
+
+<!-- ========== 四、写模式配置 ========== -->
+<section id="config-write">
+  <div class="section-head">
+    <span class="section-num">04 / 写模式</span>
+    <h2 class="section-title">写模式完整配置</h2>
+  </div>
+  <p class="section-sub">
+    写模式需要 PC 端的 ASR 模型、Windows 默认输入设备、以及桌面输入焦点三者就绪。
+    以下按步骤完成配置。
+  </p>
+
+  <h3>4.1 准备 ASR 模型</h3>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">检查 ASR 模型状态</div>
+      <div class="step-desc">
+        打开 PC 端麦播链，在首页查看 <strong>模型状态指示</strong>：
+        <ul style="margin-top: 8px;">
+          <li><strong>就绪</strong>（绿点）：模型完整加载，可直接使用。</li>
+          <li><strong>下载中</strong>（琥珀色 + 进度环）：首次启动自动下载 ZipFormer 中英双语模型（~120 MB）。</li>
+          <li><strong>未就绪</strong>（红点）：模型文件缺失或损坏，需重新下载。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">手动下载或校验模型（如需）</div>
+      <div class="step-desc">
+        进入 <strong>设置页 → 模型管理</strong>，点击「重新下载模型」即可触发。
+        模型完整性由 SHA256 校验，下载失败可重试。<br />
+        模型落盘位置：<code>%APPDATA%\com.micspeaklink.app\resources\models\zipformer-bilingual\</code>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-warn">
+    <span class="callout-icon">!</span>
+    <p>
+      <strong>踩坑提示</strong>：正式发布的 PC 安装包必须带 <code>--features asr</code> 编译选项，
+      否则会退回 Mock 引擎 —— 模型开关亮着但实际不识别。
+      下载第三方构建版本时请确认是 <strong>官方 release</strong>。
+    </p>
+  </div>
+
+  <h3>4.2 配置 Windows 默认输入设备</h3>
+
+  <p>
+    写模式启动后，PC 端 ASR 会通过 WASAPI 共享模式读取名为
+    <code>VoiceMeeter Input</code> 的虚拟输入设备。
+    因此 Windows 默认<strong>输入设备</strong>必须指向它，否则 ASR 拿不到音频。
+  </p>
+
+  <h4>方法一：键盘快捷键（推荐）</h4>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">按下 <kbd>Win</kbd> + <kbd>I</kbd> 打开 Windows 设置</div>
+      <div class="step-desc">
+        任意界面下同时按下 <kbd>Win</kbd> 键和 <kbd>I</kbd> 键，唤起 Windows 系统设置窗口。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">在左侧导航中选择「系统」</div>
+      <div class="step-desc">
+        系统设置首页包含显示、声音、通知、电源等子项。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <div class="step-title">滚到最下方选择「声音」</div>
+      <div class="step-desc">
+        进入声音设置页，可以看到输出、输入、声音设备三块区域。
+        关于「Win + I → 系统 → 声音」入口的完整图示请参见
+        <a href="#config-listen" style="color: var(--accent);">第 5.3 节「输入 / 输出设备的统一入口」</a>。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <div class="step-title">向下滚动到「输入」区域，把默认设备改成 VoiceMeeter Input</div>
+      <div class="step-desc">
+        在「选择你的输入设备」下拉框中，选择 <code>VoiceMeeter Input</code>。
+        这一步把系统默认输入指向虚拟麦克风。
+      </div>
+    </div>
+  </div>
+
+  <div class="screenshot">
+    <div class="screenshot-frame">
+      <img src="./assets/windows系统声音配置之默认输入设备设置.png" alt="Windows 默认输入设备配置" />
+    </div>
+    <div class="screenshot-caption">
+      <strong>图 7 · Windows 默认输入设备配置</strong> — 红色框内为「输入」区域，
+      在「选择你的输入设备」下拉框中选择 <strong>VoiceMeeter Input</strong>。
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-content">
+      <div class="step-title">验证输入条在说话时会跳动</div>
+      <div class="step-desc">
+        对着手机说话时，下方「测试你的麦克风」进度条应当明显跳动。
+        如果完全不动，请检查手机 APP 是否处于<strong>已连接</strong>状态，
+        以及麦克风权限是否被授予。
+      </div>
+    </div>
+  </div>
+
+  <h4>方法二：右下角任务栏一键切换</h4>
+  <ul>
+    <li>右键点击任务栏右下角<strong>扬声器图标</strong> → 选择「声音设置」。</li>
+    <li>或在弹出的设备列表里直接切换「默认输入设备」。</li>
+  </ul>
+
+  <h3>4.3 在麦播链中开启写模式</h3>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">确保手机端已连接</div>
+      <div class="step-desc">
+        确认手机 APP 已显示「已连接 [电脑名]」，且 Pulse 状态点为绿色脉冲。
+        否则写模式开启后无法获取音频。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">PC 端切换到写模式</div>
+      <div class="step-desc">
+        首页 → 「写模式」开关拨到右侧。开关亮起琥珀色表示 ASR 已开始接收音频。
+        首次启动时后端会自动加载模型，加载期间会显示「正在初始化」提示。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <div class="step-title">PC 端用鼠标点击激活目标输入框</div>
+      <div class="step-desc">
+        把 PC 鼠标移动到任意可以输入文字的地方（浏览器地址栏、Word、记事本、聊天窗口、IDE 编辑区等），
+        <strong>用鼠标点击</strong>该输入框，让光标（闪烁的竖线）落在控件内。
+        麦播链会把识别结果写入光标所在位置，因此这一步必不可少。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <div class="step-title">按下 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Space</kbd>，开始语音输入</div>
+      <div class="step-desc">
+        按下默认全局快捷键 <code>Ctrl+Shift+Space</code>（可在设置页自定义）后，
+        写模式开关会切到「录制中」状态，手机麦克风采集的语音会被实时识别并下发到 PC 端，
+        片刻后文字就会<strong>直接出现在你刚才点击的输入框光标处</strong>。
+        再次按下同一快捷键即可停止录入。
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">★</span>
+    <p>
+      <strong>快捷键推荐用法</strong>：每次需要录入文字时，
+      <strong>①</strong> 先用鼠标点击目标输入框（让焦点落在那里），
+      <strong>②</strong> 再按下 <code>Ctrl+Shift+Space</code> 开麦说话，
+      <strong>③</strong> 讲完后再次按下同一快捷键（或自动停止），
+      识别出的文字就会插入到你当前所在的文本框。
+      切换到下一个输入框时重复 ①②③ 即可。
+    </p>
+  </div>
+
+  <h3>4.4 全局快捷键</h3>
+
+  <table>
+    <thead>
+      <tr><th>快捷键</th><th>动作</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="kbd-row"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Space</kbd></span></td><td><strong>开始 / 停止语音录入</strong>（写模式主快捷键）</td></tr>
+      <tr><td><span class="kbd-row"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd></span></td><td>切换听模式（音频回传开 / 关）</td></tr>
+      <tr><td><span class="kbd-row"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>W</kbd></span></td><td>写模式开关（与首页 UI 同步）</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">i</span>
+    <p>
+      <strong>关于快捷键冲突</strong>：如果你安装了其他同样使用 <code>Ctrl+Shift+Space</code> 的软件，
+      可以在 PC 端设置页 → 快捷键中重新绑定或禁用。
+      快捷键需在麦播链 PC 端启动时生效。
+    </p>
+  </div>
+</section>
+
+<!-- ========== 五、听模式配置 ========== -->
+<section id="config-listen">
+  <div class="section-head">
+    <span class="section-num">05 / 听模式</span>
+    <h2 class="section-title">听模式完整配置</h2>
+  </div>
+  <p class="section-sub">
+    听模式依赖 <strong>VoiceMeeter Banana</strong> 虚拟音频设备。
+    如果你的 PC 在安装麦播链时已经安装了 VoiceMeeter，可直接跳转第 5.2 节。
+  </p>
+
+  <h3>5.1 确认 VoiceMeeter Banana 已运行</h3>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">查看 PC 端首页的 VoiceMeeter 状态</div>
+      <div class="step-desc">
+        首页会显示三种状态：
+        <ul style="margin-top: 6px;">
+          <li><strong>NotInstalled</strong>：未安装，需手动下载 <a href="https://vb-audio.com/Voicemeeter/" target="_blank" style="color: var(--accent);">VoiceMeeter Banana</a> 并安装。</li>
+          <li><strong>Installed</strong>：已安装但未运行，请双击桌面 <code>VoiceMeeter Banana</code> 图标启动。</li>
+          <li><strong>Running</strong>：已运行，听模式可用。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">首次安装或升级 VoiceMeeter</div>
+      <div class="step-desc">
+        运行 VB-Audio 安装器，按默认选项完成安装。
+        安装完成后<strong>重启一次</strong> Windows 让虚拟音频驱动生效。
+        启动 VoiceMeeter 主窗口（不要关闭），确认右下角托盘出现 mixer 图标。
+      </div>
+    </div>
+  </div>
+
+  <h3>5.2 配置 Windows 默认输出设备</h3>
+
+  <p>
+    听模式启动时，麦播链会自动把 Windows 默认<strong>输出设备</strong>切换为
+    <code>Voicemeeter AUX Input</code>，以便 PC 的所有应用声音都进入虚拟链路。
+    你也可以手动按下面的方式切换。
+  </p>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">按下 <kbd>Win</kbd> + <kbd>I</kbd> 打开 Windows 设置</div>
+      <div class="step-desc">
+        任意界面下同时按下 <kbd>Win</kbd> + <kbd>I</kbd>。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">选择「系统」→「声音」</div>
+      <div class="step-desc">
+        进入声音设置页。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <div class="step-title">向下滚动到「输出」区域，把默认设备改成 Voicemeeter AUX Input</div>
+      <div class="step-desc">
+        在「选择你的输出设备」下拉框中，选择 <code>Voicemeeter AUX Input</code>。
+        完成后系统所有应用声音都会进入 VoiceMeeter 链路。
+      </div>
+    </div>
+  </div>
+
+  <div class="screenshot">
+    <div class="screenshot-frame">
+      <img src="./assets/windows系统声音配置之默认输出设备设置.png" alt="Windows 默认输出设备配置" />
+    </div>
+    <div class="screenshot-caption">
+      <strong>图 8 · Windows 默认输出设备配置</strong> — 红色框内为「输出」区域，
+      在「选择你的输出设备」下拉框中选择 <strong>Voicemeeter AUX Input</strong>。
+    </div>
+  </div>
+
+  <h3>5.3 输入 / 输出设备的统一入口</h3>
+
+  <p>
+    「默认输入」（<code>VoiceMeeter Input</code>，写模式使用）与
+    「默认输出」（<code>Voicemeeter AUX Input</code>，听模式使用）
+    都在 Windows 设置的<strong>同一个声音页面</strong>里管理。
+    <strong>所有相关配置都从此处进入</strong>，写模式需要切换输入设备、听模式需要切换输出设备时，都按下面方式打开：
+  </p>
+
+  <ol>
+    <li>按下 <kbd>Win</kbd> + <kbd>I</kbd> 快捷键，打开「Windows 设置」窗口。</li>
+    <li>在左侧导航栏中点击「<strong>系统</strong>」，向下滚动找到并点击「<strong>声音</strong>」。</li>
+  </ol>
+
+  <div class="screenshot">
+    <div class="screenshot-frame">
+      <img src="./assets/设置页面.png" alt="Windows 设置 → 系统页面" />
+    </div>
+    <div class="screenshot-caption">
+      <strong>图 9 · 设置 → 系统页面</strong> — 左侧选中「系统」，向下滚动找到「声音」入口。
+      进入后即可在同一页内分别配置「输出」（听模式）和「输入」（写模式）默认设备。
+    </div>
+  </div>
+
+  <div class="callout callout-warn">
+    <span class="callout-icon">!</span>
+    <p>
+      <strong>重要提示</strong>：VoiceMeeter 未运行时，<code>Voicemeeter AUX Input</code> 与 <code>VoiceMeeter Input</code>
+      都不会出现在下拉框中。请先按 <a href="#config-listen" style="color: var(--accent);">第 5.1 节</a> 启动 VoiceMeeter 主窗口，再来此处切换。
+    </p>
+  </div>
+
+  <h3>5.4 VoiceMeeter 自动路由</h3>
+
+  <p>
+    麦播链会在听模式启动时调用 <code>vm_remote.rs</code> 自动配置 VoiceMeeter 路由，
+    固定为：
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>输入</th><th>输出总线</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>VoiceMeeter Input</td><td>B1</td><td>手机麦克风上行（写模式音频流）</td></tr>
+      <tr><td>Voicemeeter AUX Input</td><td>B2</td><td>PC 系统音频下行（听模式音频流）</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">★</span>
+    <p>
+      <strong>自动化说明</strong>：上述路由由 Remote API 全自动写入，
+      不需要你手动在 VoiceMeeter GUI 里拖线。
+      如果你想保留自定义路由，可以在设置页关闭「自动路由」开关。
+    </p>
+  </div>
+
+  <h3>5.5 在麦播链中开启听模式</h3>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">确保手机端已连接</div>
+      <div class="step-desc">
+        手机 APP 已显示「已连接」，Pulse 状态为绿色。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">PC 端首页 → 打开「听模式」开关</div>
+      <div class="step-desc">
+        开关亮起蓝色（info 色）表示下行链路建立成功。
+        后端会自动切换默认输出设备到 <code>Voicemeeter AUX Input</code> 并写入路由。
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <div class="step-title">调整手机音量</div>
+      <div class="step-desc">
+        使用手机系统音量键控制外放音量。
+        PC 端的播放音量不影响链路，可以保持中等以避免回授。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 七、常见问题 FAQ ========== -->
+<section id="faq">
+  <div class="section-head">
+    <span class="section-num">06 / FAQ</span>
+    <h2 class="section-title">常见问题与处理</h2>
+  </div>
+  <p class="section-sub">
+    按出现频率整理了 15 个常见问题，每个问题都给出<strong>症状 / 原因 / 处理步骤</strong>三段式答案。
+  </p>
+
+  <details class="faq">
+    <summary>Q1. 安装时弹出「需要管理员权限」怎么办？</summary>
+    <div class="faq-content">
+      <p><strong>症状</strong>：双击安装包后立即弹出 UAC 提示被拒绝，或安装器直接退出。</p>
+      <p><strong>原因</strong>：麦播链需要写注册表（mDNS 服务声明）、写入 VoiceMeeter 路由配置、注册全局快捷键，这些操作都要求管理员令牌。</p>
+      <p><strong>处理</strong>：</p>
+      <ul>
+        <li>右键安装包 → 「以管理员身份运行」。</li>
+        <li>如果 UAC 始终拒绝，请联系 IT 部门申请本地管理员权限。</li>
+        <li>便携模式（不需要管理员）当前版本不提供。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Q2. 模型状态一直显示「下载中」或「未就绪」？</summary>
+    <div class="faq-content">
+      <p><strong>症状</strong>：首页模型指示灯长时间红色或黄色。</p>
+      <p><strong>原因</strong>：模型文件缺失、SHA256 校验失败、磁盘空间不足或网络受限。</p>
+      <p><strong>处理</strong>：</p>
+      <ul>
+        <li>设置页 → 模型管理 → 重新下载。</li>
+        <li>确认 <code>%APPDATA%\com.micspeaklink.app\resources\models\zipformer-bilingual\</code> 目录有 1 个 encoder + 1 个 decoder + 1 个 joiner + 1 个 tokens.txt。</li>
+        <li>查看首页底部日志区是否提示「网络超时」「磁盘已满」。</li>
+        <li>如使用代理，请在系统设置 → 网络 → 代理中配置。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Q3. 写模式开启后，对着手机说话 PC 没有识别文字？</summary>
+    <div class="faq-content">
+      <p><strong>症状</strong>：写模式开关亮起，手机端音量条跳动，但 PC 端没有任何文本输出。</p>
+      <p><strong>原因</strong>：通常有以下几种 ——</p>
+      <ul>
+        <li>Windows 默认<strong>输入设备</strong>没有指向 <code>VoiceMeeter Input</code>。</li>
+        <li>桌面焦点不在可输入控件（如焦点在桌面图标区）。</li>
+        <li>ASR 引擎被全局快捷键暂停，或模型处于 Mock 引擎（构建版本不带 asr feature）。</li>
+      </ul>
+      <p><strong>处理</strong>：</p>
+      <ul>
+        <li>按本文 <a href="#win-sound" style="color: var(--accent);">第 6.2 节</a> 检查默认输入设备。</li>
+        <li>把光标移到记事本/浏览器地址栏等可输入处再试一次。</li>
+        <li>首页 → 引擎类型应当显示为 <code>SherpaOnnx</code>，如显示 <code>Mock</code> 请重新下载官方安装包。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Q4. 听模式开启后，手机扬声器没有声音？</summary>
+    <div class="faq-content">
+      <p><strong>症状</strong>：听模式开关亮起，但手机无声。</p>
+      <p><strong>原因</strong>：通常是 VoiceMeeter 没运行、Windows 默认输出没切、或 B2 总线被关闭。</p>
+      <p><strong>处理</strong>：</p>
+      <ul>
+        <li>确认 VoiceMeeter Banana 主窗口已打开（不要最小化到托盘）。</li>
+        <li>按本文 <a href="#win-sound" style="color: var(--accent);">第 6.3 节</a> 检查默认输出设备。</li>
+        <li>打开 VoiceMeeter GUI，确认 <code>AUX Input → B2</code> 处于「开」状态。</li>
+        <li>手机系统音量是否过低？检查是否被静音。</li>
+        <li>关闭麦播链听模式后再开一次，让 <code>vm_remote</code> 重新写入路由。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Q5. 手机端扫描不到电脑？</summary>
+    <div class="faq-content">
+      <p><strong>症状</strong>：APP 扫描页面长时间转圈，没有出现电脑列表。</p>
+      <p><strong>原因</strong>：两端不在同一局域网、或路由器禁止了 5353 / 9870 等端口的 mDNS 广播。</p>
+      <p><strong>处理</strong>：</p>
+      <ul>
+        <li>确认手机和电脑连接到<strong>同一个 Wi-Fi</strong>（不是访客网络）。</li>
+        <li>电脑端首页查看 deviceId 是否已生成；如有，但手机扫不到，请关闭电脑防火墙临时验证。</li>
+        <li>企业网/校园网经常屏蔽组播，请改用手机热点临时验证。</li>
+        <li>如路由器开启了 AP 隔离，请关闭。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Q6. 配对码输入后一直「连接中」？</summary>
+    <div class="faq-content">
+      <p><strong>症状</strong>：手机端输入配对码后转圈超过 30 秒仍未连接。</p>
+      <p><strong>原因</strong>：配对码已过期（默认 60s）、输入错误、或 PC 端 mDNS 服务异常。</p>
+      <p><strong>处理</strong>：</p>
+      <ul>
+        <li>PC 端首页查看配对码倒计时是否已结束 —— 是的话点击「刷新配对码」。</li>
+        <li>重新输入，注意区分大小写与易混字符（0/O、1/I/l）。</li>
+        <li>关闭并重开 PC 端麦播链，再生成新配对码。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Q7. WebRTC 连接频繁断开？</summary>
+    <div class="faq-content">
+      <p><strong>症状</strong>：连接成功几秒到几十秒后自动断开，循环往复。</p>
+      <p><strong>原因</strong>：路由器切换信道、手机省电策略杀进程、防火墙阻断 STUN/TURN。</p>
+      <p><strong>处理</strong>：</p>
+      <ul>
+        <li>把麦播链手机 APP 加入<strong>电池白名单</strong>与<strong>自启动</strong>。</li>
+        <li>Wi-Fi 信号差时改用 5 GHz 频段，或靠近路由器。</li>
+        <li>检查路由器是否启用了「Wi-Fi 省电」「设备隔离」等功能。</li>
+        <li>避免一边使用一边进行大文件下载（占用同一 AP 带宽）。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Q8. VoiceMeeter 列表里找不到 VoiceMeeter Input / AUX Input？</summary>
+    <div class="faq-content">
+      <p><strong>症状</strong>：Windows 声音设置下拉框中没有 VoiceMeeter 设备。</p>
+      <p><strong>原因</strong>：VoiceMeeter 没安装 / 安装后未重启 / 驱动未注册。</p>
+      <p><strong>处理</strong>：</p>
+      <ul>
+        <li>从 <a href="https://vb-audio.com/Voicemeeter/" target="_blank" style="color: var(--accent);">VB-Audio 官网</a> 下载 Banana 版本（不是 Potato）。</li>
+        <li>安装完成后<strong>重启 Windows</strong>，让驱动注册。</li>
+        <li>打开 VoiceMeeter 主窗口至少一次，让虚拟端点初始化。</li>
+        <li>设备管理器 → 声音、视频和游戏控制器 下应当出现 <code>VB-Audio VoiceMeeter Input</code> / <code>Output</code>。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Q9. 手机切换 Wi-Fi 后连接断开，能自动恢复吗？</summary>
+    <div class="faq-content">
+      <p><strong>症状</strong>：从公司 Wi-Fi 回到家 Wi-Fi（或反之）后连接断开。</p>
+      <p><strong>原因</strong>：IP 变化后 mDNS 缓存失效 + WebRTC ICE 重协商。</p>
+      <p><strong>处理</strong>：</p>
+      <ul>
+        <li>在手机 APP 扫描页手动点击「重新扫描」。</li>
+        <li>已信任设备列表会自动尝试用 <code>device_token</code> 重新认证，无需重新输配对码。</li>
+        <li>如手机为 IPv6 网络 + 电脑为 IPv4 网络，请在路由器开启 NAT64 或统一为 IPv4。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Q10. 识别文字出现错字或漏字？</summary>
+    <div class="faq-content">
+      <p><strong>症状</strong>：识别的文字与原话有偏差。</p>
+    <p><strong>原因</strong>：环境噪声、说话含糊、麦克风增益过低、口音与训练集差异。</p>
+    <p><strong>处理</strong>：</p>
+    <ul>
+      <li>手机麦克风对准嘴部，距离 10~20 cm。</li>
+      <li>在安静环境使用，关闭空调/风扇等持续噪声源。</li>
+      <li>语速放慢、吐字清晰是关键。</li>
+      <li>当前模型为中英双语，识别中英混合表现更佳。</li>
+    </ul>
+  </div>
+  </details>
+
+  <details class="faq">
+    <summary>Q11. 全局快捷键不生效？</summary>
+    <div class="faq-content">
+      <p><strong>症状</strong>：按下 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>W</kbd> 没有反应。</p>
+      <p><strong>原因</strong>：被其他软件占用、未授予后台快捷键权限、麦播链未启动。</p>
+      <p><strong>处理</strong>：</p>
+      <ul>
+        <li>确认麦播链 PC 端正在运行（托盘有图标）。</li>
+        <li>检查是否有其他软件（截图工具、IDE）占用同一快捷键。</li>
+        <li>设置页 → 快捷键 → 修改为不冲突的组合。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Q12. 写模式 + 听模式可以同时开吗？</summary>
+    <div class="faq-content">
+      <p><strong>答</strong>：不能。</p>
+      <p>
+        麦播链的两个模式由<strong>统一状态机</strong>裁决，互斥运行。
+        切换其中一个，另一个会被后端<strong>自动停用</strong>。
+        这是设计约束，避免音轨冲突与 ASR / Loopback 抢占资源。
+      </p>
+      <p>如果你既需要 ASR 又需要听到电脑声音，可：</p>
+      <ul>
+        <li>先用<strong>写模式</strong>完成语音输入，再切回<strong>听模式</strong>听音频。</li>
+        <li>或直接在手机上接一副耳机，听模式时声音走耳机，写模式时说话走手机麦。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Q13. 安装包被杀毒软件拦截？</summary>
+    <div class="faq-content">
+      <p><strong>症状</strong>：双击安装包后 Windows Defender / 火绒 / 360 立即删除或隔离。</p>
+      <p><strong>原因</strong>：未签名的安装包被启发式引擎误判，或下载源不在信任列表。</p>
+      <p><strong>处理</strong>：</p>
+      <ul>
+        <li>从官方 GitHub Release 或 <code>docs/release/</code> 目录下载。</li>
+        <li>将安装包加入杀毒软件白名单。</li>
+        <li>右键安装包 → 属性 → 勾选「解除锁定」后再运行。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Q14. 手机端后台运行几分钟后音频就停了？</summary>
+    <div class="faq-content">
+      <p><strong>症状</strong>：APP 切到后台 1~5 分钟后再回来，没有识别也没有声音。</p>
+      <p><strong>原因</strong>：手机系统杀掉了麦克风 / 前台服务 / WebSocket。</p>
+      <p><strong>处理</strong>：</p>
+      <ul>
+        <li>首次进入主页时按系统弹窗引导，把麦播链加入<strong>自启动 + 电池白名单</strong>。</li>
+        <li>不同厂商 ROM 路径：
+          <ul>
+            <li><strong>华为/荣耀</strong>：手机管家 → 应用启动管理 → 麦播链 → 改为「手动管理」并全部勾选。</li>
+            <li><strong>小米/红米</strong>：安全中心 → 自启动管理 + 电量与性能 → 后台配置 → 麦播链 → 无限制。</li>
+            <li><strong>OPPO/realme</strong>：设置 → 电池 → 更多电池设置 → 关闭「睡眠待机优化」；设置 → 应用 → 应用管理 → 麦播链 → 自启动 + 关联启动。</li>
+            <li><strong>vivo</strong>：设置 → 电池 → 后台高耗电 → 麦播链 → 允许。</li>
+            <li><strong>三星</strong>：设置 → 应用程序 → 麦播链 → 电池 → 后台使用限制 → 改为「不优化」。</li>
+          </ul>
+        </li>
+        <li>开启 APP 内的「前台服务保活」开关（如有提示）。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Q15. 在哪里查看日志 / 提交 Bug？</summary>
+    <div class="faq-content">
+      <p><strong>症状</strong>：遇到无法解决的问题，需要排查或上报。</p>
+      <p><strong>处理</strong>：</p>
+      <ul>
+        <li><strong>PC 端日志</strong>：<code>%APPDATA%\com.micspeaklink.app\logs\app.log.YYYY-MM-DD</code>。</li>
+        <li><strong>手机端日志</strong>：APP 内 → 设置 → 导出运行日志。</li>
+        <li><strong>GitHub Issue</strong>：项目仓库的 <code>Issues</code> 页面，提供两端日志、复现步骤、系统版本、设备型号。</li>
+        <li><strong>诊断信息</strong>：PC 端首页 → 设置 → 导出诊断包（含 ASR 状态、VoiceMeeter 状态、设备拓扑）。</li>
+      </ul>
+    </div>
+  </details>
+
+</section>
+
+<!-- ========== 八、附录 ========== -->
+<section id="appendix">
+  <div class="section-head">
+    <span class="section-num">07 / 附录</span>
+    <h2 class="section-title">配置速查表</h2>
+  </div>
+
+  <h3>7.1 端口与设备速查</h3>
+  <table>
+    <thead>
+      <tr><th>用途</th><th>协议 / 端口 / 名称</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>mDNS 广播</td><td>UDP 5353 / _micspeaklink._tcp.local</td><td>局域网设备发现</td></tr>
+      <tr><td>WebSocket 信令</td><td>TCP 9870</td><td>建链阶段 SDP / ICE 交换</td></tr>
+      <tr><td>WebRTC 音频</td><td>UDP 动态端口</td><td>建链后 Opus 双向流</td></tr>
+      <tr><td>默认输入</td><td>VoiceMeeter Input</td><td>写模式的虚拟输入端点</td></tr>
+      <tr><td>默认输出</td><td>Voicemeeter AUX Input</td><td>听模式的虚拟输出端点</td></tr>
+    </tbody>
+  </table>
+
+  <h3>7.2 配置任务清单</h3>
+  <ul class="checklist">
+    <li>Windows 10/11 + Android 7+ 已就绪</li>
+    <li>PC 安装包来自官方 release 渠道</li>
+    <li>手机 APK 已开启「未知来源」</li>
+    <li>两端连接同一 Wi-Fi（同子网或 AP 互通）</li>
+    <li>VoiceMeeter Banana 已安装并启动</li>
+    <li>默认输入 = VoiceMeeter Input</li>
+    <li>默认输出 = Voicemeeter AUX Input</li>
+    <li>ASR 模型已下载并校验通过</li>
+    <li>手机已授予麦克风 + 通知权限</li>
+    <li>手机已加入自启动 / 电池白名单</li>
+  </ul>
+
+  </section>
+
+</div>
+
+<!-- ========== 底部 ========== -->
+<footer>
+  <p class="mono">MicSpeakLink v0.1.0 · 2026-09-04</p>
+  <p>基于 Tauri + Vue 3 + Flutter + sherpa-onnx + VoiceMeeter 构建</p>
+  <p>开源协议：GPL-3.0</p>
+  <p style="margin-top: 16px;">
+    作者：<strong style="color: var(--text-primary);">bobo</strong>
+    &nbsp;·&nbsp;
+    联系方式：
+    <a href="mailto:sunlionmedtech@outlook.com" style="color: var(--accent);">sunlionmedtech@outlook.com</a>
+  </p>
+  <p>
+    GitHub：
+    <a href="https://github.com/tengyuangangben/MicSpeakLink.git" target="_blank" style="color: var(--accent); word-break: break-all;">github.com/tengyuangangben/MicSpeakLink</a>
+  </p>
+  <p style="margin-top: 16px;">本说明书由麦播链项目团队维护，最终解释权归项目所有。</p>
+</footer>
+
+<script>
+  // 平滑折叠展开
+  document.querySelectorAll('.faq').forEach(function(faq){
+    faq.addEventListener('toggle', function(){
+      if(faq.open){
+        setTimeout(function(){ faq.scrollIntoView({behavior:'smooth', block:'nearest'}); }, 100);
+      }
+    });
+  });
+  // 锚点激活高亮
+  const sections = document.querySelectorAll('section');
+  const navLinks = document.querySelectorAll('.topbar-nav a');
+  window.addEventListener('scroll', function(){
+    let current = '';
+    sections.forEach(function(sec){
+      const top = sec.offsetTop - 100;
+      if(window.scrollY >= top) current = sec.id;
+    });
+    navLinks.forEach(function(a){
+      a.style.color = '';
+      if(a.getAttribute('href') === '#' + current) a.style.color = 'var(--accent)';
+    });
+  });
+</script>
+
+</body>
+</html>
